@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0u0aye2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+  <bpmn:process id="bookfinder" name="Book Finder" isExecutable="true">
+    <bpmn:startEvent id="Event_1vgcxfp" name="I am interested in reading a book" camunda:initiator="demo">
+      <bpmn:outgoing>Flow_0ynis40</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_1j4z3oe" name="Types in the title or the author&#39;s name" camunda:assignee="demo" camunda:candidateUsers="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="searchQuery" label="search" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ynis40</bpmn:incoming>
+      <bpmn:incoming>noresult</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qsrsth</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0ynis40" sourceRef="Event_1vgcxfp" targetRef="Activity_1j4z3oe" />
+    <bpmn:serviceTask id="Activity_1cg0uoj" name="Generate a list of search results" camunda:type="external" camunda:topic="find-books">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="Output_02oecrm">
+            <camunda:list />
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+        <camunda:field name="">
+          <camunda:string></camunda:string>
+        </camunda:field>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qsrsth</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j045b9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0qsrsth" sourceRef="Activity_1j4z3oe" targetRef="Activity_1cg0uoj" />
+    <bpmn:exclusiveGateway id="Gateway_0argr70" name="found result?" camunda:asyncAfter="true">
+      <bpmn:incoming>Flow_1j045b9</bpmn:incoming>
+      <bpmn:outgoing>noresult</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qug72x</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1j045b9" sourceRef="Activity_1cg0uoj" targetRef="Gateway_0argr70" />
+    <bpmn:sequenceFlow id="noresult" name="no" sourceRef="Gateway_0argr70" targetRef="Activity_1j4z3oe">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!result}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="chooseBook" name="Chooses a book on the list" camunda:assignee="demo" camunda:candidateUsers="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="book" label="book" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qug72x</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wc58gu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="seeReviews" name="Clicks &#34;See reviews&#34;" camunda:assignee="demo" camunda:candidateUsers="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="reviewBook" label="reviews" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yyau8e</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0qug72x" sourceRef="Gateway_0argr70" targetRef="chooseBook" />
+    <bpmn:sequenceFlow id="Flow_1wc58gu" sourceRef="chooseBook" targetRef="Activity_0okmfdj" />
+    <bpmn:serviceTask id="Activity_0okmfdj" name="Generate Book Details" camunda:type="external" camunda:topic="find-details">
+      <bpmn:incoming>Flow_1wc58gu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yyau8e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0yyau8e" sourceRef="Activity_0okmfdj" targetRef="seeReviews" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bookfinder">
+      <bpmndi:BPMNEdge id="Flow_0wxz2pv_di" bpmnElement="noresult">
+        <di:waypoint x="720" y="175" />
+        <di:waypoint x="720" y="80" />
+        <di:waypoint x="360" y="80" />
+        <di:waypoint x="360" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="535" y="63" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j045b9_di" bpmnElement="Flow_1j045b9">
+        <di:waypoint x="600" y="200" />
+        <di:waypoint x="695" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qsrsth_di" bpmnElement="Flow_0qsrsth">
+        <di:waypoint x="410" y="200" />
+        <di:waypoint x="500" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ynis40_di" bpmnElement="Flow_0ynis40">
+        <di:waypoint x="218" y="200" />
+        <di:waypoint x="310" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qug72x_di" bpmnElement="Flow_0qug72x">
+        <di:waypoint x="745" y="200" />
+        <di:waypoint x="830" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wc58gu_di" bpmnElement="Flow_1wc58gu">
+        <di:waypoint x="930" y="200" />
+        <di:waypoint x="1020" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yyau8e_di" bpmnElement="Flow_0yyau8e">
+        <di:waypoint x="1120" y="200" />
+        <di:waypoint x="1220" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1vgcxfp_di" bpmnElement="Event_1vgcxfp">
+        <dc:Bounds x="182" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="145" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j4z3oe_di" bpmnElement="Activity_1j4z3oe">
+        <dc:Bounds x="310" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cg0uoj_di" bpmnElement="Activity_1cg0uoj">
+        <dc:Bounds x="500" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ueb5iu_di" bpmnElement="chooseBook">
+        <dc:Bounds x="830" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0argr70_di" bpmnElement="Gateway_0argr70" isMarkerVisible="true">
+        <dc:Bounds x="695" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="690" y="232" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ayubmc_di" bpmnElement="Activity_0okmfdj">
+        <dc:Bounds x="1020" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yxd3sd_di" bpmnElement="seeReviews">
+        <dc:Bounds x="1220" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
