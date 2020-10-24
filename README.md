@@ -15,4 +15,4 @@ Therefore we have 2 .bpmn files.
 ##### Authors
 Simon Schønberg Bojesen,
 Kenneth Leo Hansen,
-Martin Høigaard Rasmussen"# CamundaBPMN" 
+Martin Høigaard Rasmussen
